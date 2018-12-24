@@ -4,6 +4,7 @@ const keys = require('./config/keys');
 const authRoutes = require('./routes/authRoutes');
 const billingRoutes = require('./routes/billingRoutes');
 const cookieSession = require('cookie-session');
+const bodyParser = require('body-parser');
 const passport = require('passport');
 require('./models/User');
 require('./services/passport');
@@ -12,6 +13,8 @@ require('./services/passport');
 mongoose.connect(keys.mongoURI);
 
 const app = express();
+
+app.use(bodyParser.json());
 
 app.use(
   cookieSession({
@@ -22,6 +25,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 authRoutes(app);
 billingRoutes(app);
