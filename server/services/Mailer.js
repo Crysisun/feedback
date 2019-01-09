@@ -6,6 +6,7 @@ class Mailer extends helper.Mail {
     constructor({ subject, recipient }, content) {
         super();
 
+        this.sgApi = sendgrid(keys.sendGridKey);
         this.from_email = new helper.Email('no-reply@feedback.com');
         this.subject = subject;
         this.body = new helper.Content('text/html', content);
@@ -15,8 +16,8 @@ class Mailer extends helper.Mail {
         this.addClickTracking();
         this.addRecipients();
     }
-    formatAddresses(ricipients) {
-        return ricipients.map(({ email }) => {
+    formatAddresses(recipients) {
+        return recipients.map(({ email }) => {
             return new helper.Email(email);
         })
     }
@@ -26,6 +27,23 @@ class Mailer extends helper.Mail {
 
         trackingSettings.setClickTracking(clickTracking);
         this.addTrackingSettings(trackingSettings);
+    }
+    addRecipients() {
+        const personalize = new helper.Personalization();
+        this.recipients.forEach(recipient => {
+           personalize.addTo(recipient);
+        });
+        this.addPersonalization(personalize);
+    }
+
+    async send() {
+        const request = this.sgApi.emptyRequest({
+            method: 'POST',
+            path: '/v3/mail/send',
+            body: this.toJSON()
+        });
+        const response = this.sgApi.API(request);
+        return response;
     }
 }
 
