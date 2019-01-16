@@ -42,7 +42,15 @@ function validate(values) {
     if (!values.title) {
         errors.title = 'You must provide a title!';
     }
-
+    if (!values.subject) {
+        errors.subject = 'You must provide a subject!';
+    }
+    if (!values.body) {
+        errors.body = 'You must provide a survey body!';
+    }
+    if (!values.emails) {
+        errors.emails = 'You must provide a recipient!';
+    }
     return errors;
 }
 
