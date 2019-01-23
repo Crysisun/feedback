@@ -11,12 +11,13 @@ module.exports = app => {
         res.send('Thanks for voting!');
     });
     app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
-        const { title, subject, body, recipients } = req.body;
+        const { title, subject, body, emails } = req.body;//Found the bug, it should be emails instead of recipients here
+        console.log(emails);
         const survey = new Survey({
             title,
             subject,
             body,
-            recipients: recipients.split(',').map(email =>  ({ email: email.trim() })),
+            recipients: emails.split(',').map(email =>  ({ email: email.trim() })),
             _user: req.user.id,
             dateSent: Date.now()
         });
